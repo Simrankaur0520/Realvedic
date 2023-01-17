@@ -107,3 +107,7 @@ def top_sellers(request,format=None):
     top_selling_products.append(prod)
     res['products']:top_selling_products
     return Response(res)
+
+
+def new():
+    pass
