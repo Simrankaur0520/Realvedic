@@ -253,8 +253,10 @@ def single_product_view(request,format=None):
 
 
        
-
-def data_input_pandas():
+@api_view(['GET'])
+def data_input_pandas(request,format=None):
+    category_obj=categoryy.objects.all()
+   
     #reading and writing product data from csv file 
     '''df=pd.read_csv('product_view.csv')
     df =df.fillna(0)
@@ -310,13 +312,13 @@ def data_input_pandas():
             title=titlee,
             image=imagee
             ''' 
-'''df=pd.read_csv('realvedic_category.csv')
-        df =df.fillna(0)
-        res=df.to_dict(orient='records')
-        for i in range(len(res)):
+    '''df=pd.read_csv('realvedic_category.csv')
+    df =df.fillna(0)
+    res=df.to_dict(orient='records')
+    for i in range(len(res)):
             category= res[i]['category']
             category_colour= res[i]['category_colour']
-            category_image=""
+            category_image=res[i]['image']
 
             data=categoryy(
                 category= category,
@@ -325,7 +327,11 @@ def data_input_pandas():
             )
 
         
-            data.save()'''
+            data.save()
+    #return Response('success')
+    category_obj=categoryy.objects.values()
+    return Response(category_obj)'''
+    
 
     
        
