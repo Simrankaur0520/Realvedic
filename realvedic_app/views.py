@@ -234,8 +234,9 @@ def single_product_view(request,format=None):
                 }
                 ]
                 }
+        
                     
-   
+    #-----------response Assignment-------------------------
         res['product_details']=prod_details
         res['benefits']=benefits
         res['ingredients']=ingredients

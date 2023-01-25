@@ -14,7 +14,7 @@ class customer_details(models.Model):
     Country = models.TextField()
     
 class Product_data(models.Model):
-    Product_id = models.TextField(blank = True)
+    
     Product_name = models.TextField(blank = True)
     category = models.TextField(blank = True)
     image = models.ImageField(blank=True)
