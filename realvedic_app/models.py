@@ -44,10 +44,10 @@ class order_data(models.Model):
 
 class images_and_banners(models.Model):
     title=models.TextField()
-    image=models.TextField()
+    image=models.ImageField()
 
 class blogs(models.Model):
-    image=models.TextField()
+    image=models.ImageField()
     title=models.TextField()
     content=models.TextField()
     Points=models.TextField(blank=True)

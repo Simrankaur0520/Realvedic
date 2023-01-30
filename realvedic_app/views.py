@@ -65,24 +65,24 @@ def write_data(request,format=None):
       "item": "Dosa Mix"
     }
     }
-    #-----------------Fetching data from database tables------------------------------------
+    #-----------------------------------------------------------Fetching data from database tables-------------------------------------------------------------
     obj=Product_data.objects.filter(Status = "Active").values()
     prod_obj=Product_data.objects.values()
     category_obj=categoryy.objects.values()
     i_and_b_obj=images_and_banners.objects.values()
     blog_obj=blogs.objects.values()
-    #---------------------------------------------------------------------------------------
+    #---------------------------------------------------------------------------------------------------------------------------------------------------------
 
-    #------------------------list creation and initiation-----------------------------------
+    #--------------------------------------------------------------list creation and initiation----------------------------------------------------------------
     res={}
     tab=[]
     dual_banner_l=[]
     top_seller_products_list=[]
+    large_carousal_images_list=[]
     small_carousal_images_list=[]
-    #single_product_details=[]
     single_product_detailss={}
-    #=--------------------------------------------------------------------------------------
-    #---------------------------Passing values to tab---------------------------------------
+    #=--------------------------------------------------------------------------------------------------------------------------------------------------------
+    #------------------------------------------------------------Passing values to tab------------------------------------------------------------------------
     for i in category_obj:
         tab_dict={
             'title':i['category'],
@@ -90,8 +90,8 @@ def write_data(request,format=None):
             'color':i['category_colour']      
             }
         tab.append(tab_dict)
-    #-----------------------------------passing values for banner--------------------------- 
-    banner_obj=i_and_b_obj.exclude(title ="Make Best Dosa with us!")
+    #-----------------------------------------------------------passing values for banner-------------------------------------------------------------------- 
+    banner_obj=i_and_b_obj.filter(title__contains='banner')
     for i in banner_obj:
         dual_banner={
             'title':i['title'],
@@ -101,7 +101,7 @@ def write_data(request,format=None):
         dual_banner_l.append(dual_banner)
        
     
-    #----------------------passing values for Top selling products--------------------------- 
+    #-----------------------------------------------------passing values for Top selling products----------------------------------------------------- 
     for i in obj:
         top_seller_products={
             'image':i["image"],
@@ -112,7 +112,16 @@ def write_data(request,format=None):
     
         top_seller_products_list.append(top_seller_products)
     food=top_seller_products
+   #-----------------------------------------------------------------------Large carousal images-------------------------------------------------
+    large_car=i_and_b_obj.filter(title__contains='large_carousal_images_')
+    for i in large_car:
+        large_carousal_images={
+            "image": i["image"],
+            "product_id": i["id"]
+        }
+        large_carousal_images_list.append(large_carousal_images)
    
+    
 
     for i in prod_obj:
         small_carousal_images={
@@ -122,7 +131,8 @@ def write_data(request,format=None):
         small_carousal_images_list.append(small_carousal_images)
    
    
-    #------------------------------------------------------
+    #---------------------------------------------------------------------------------------------------------------------------------------------------
+    #-------------------------------------------------------------single product mock details-----------------------------------------------------------
     vdo_obj=i_and_b_obj.filter(title="Make Best Dosa with us!")
     for i in vdo_obj:
 
@@ -134,7 +144,9 @@ def write_data(request,format=None):
     single_product_detailss['video_data']=video_data
     single_product_detailss['food']=food
 
-    
+
+
+    #---------------------------------------------------------------------------------------------------------------------------------------------------
   
     blog_1=blog_obj.filter(id=1).values()
     for i in blog_1:
@@ -143,8 +155,10 @@ def write_data(request,format=None):
             'image':i["image"],
             'title':i["title"],
             'Content':i["content"],
-            'points':i["Points"]
+            'points':eval(i["Points"])
+          
         }
+        
     
     
     #    return Response(obj)
@@ -152,15 +166,16 @@ def write_data(request,format=None):
 
   
    
-    #-------------------------------------response assignment-----------------
+    #--------------------------------------------------------response assignment--------------------------------------------------------------------
     res['tab']=tab
     res['dual_banners']=dual_banner_l
     res['top_seller_products']=top_seller_products_list
     res['small_carousal_images']=small_carousal_images_list
-    res['large_carousal_images']=top_seller_products_list
+    res['large_carousal_images']=large_carousal_images_list
     res["single_product_details"]=single_product_detailss
     res['best_offers']=best_offers
     res['blog']=blog_obj
+    
 
     return Response(res)
 
@@ -168,14 +183,14 @@ def write_data(request,format=None):
 @api_view(['GET'])
 def single_product_view(request,format=None):
     obj=Product_data.objects.filter(id=10).values()
-    #-------------------Dictionaries and list initialisation 
-    #--------------Mock description-------------------------
+    #-------------------------------------------------------Dictionaries and list initialisation--------------------------------------------------
+    #----------------------------------------------------------Mock description--------------------------------------------------------------------
     desc=str("A ready dosa mix without going through the hassle of soaking, grinding, and preparing the batter. Just add water and salt, rest for few minutes, and start making tasty and healthy dosas. We have combined 80 sprouted green gram with nutritious moringa leaves and spices for a power-packed quick meal any time of the day.")
     res={}
    
     benefits={}
     pack_sizes=[]
-    #-----------------assigning product_details to the response
+    #------------------------------------------------------assigning product_details to the response----------------------------------------------
     for i in obj:
         weight=i["Sizes"].split("|")
         prices=i["prices"].split("|")
@@ -236,7 +251,7 @@ def single_product_view(request,format=None):
                 }
         
                     
-    #-----------response Assignment-------------------------
+    #--------------------------------------------------------------response Assignment----------------------------------------------------------------
         res['product_details']=prod_details
         res['benefits']=benefits
         res['ingredients']=ingredients
@@ -244,21 +259,17 @@ def single_product_view(request,format=None):
         res['how_we_make_it']=how_we_make_it 
         res['nutrition']=nutrition
 
-            
-
-
 
         
     return Response(res)
+
     
-
-
-       
+#----------------------------------------------------------data input for all databses commented down in this function-----------------------------
 @api_view(['GET'])
 def data_input_pandas(request,format=None):
     category_obj=categoryy.objects.all()
    
-    #reading and writing product data from csv file 
+    #-------------------------------------------------------reading and writing product data from csv file------------------------------------------ 
     '''df=pd.read_csv('product_view.csv')
     df =df.fillna(0)
     res=df.to_dict(orient='records')
@@ -278,10 +289,12 @@ def data_input_pandas(request,format=None):
         sibling_product=res[i]["sibling_product"]
         HSN=res[i]["HSN "]
         SKU=res[i]["SKU"]
-        print(category)
+        print(category)'''
+        
+        #-----------------------------------------------------Saving data into database----------------------------------------------------------
      
 
-        data=Product_data(
+'''data=Product_data(
             Product_name =Product_name,
             category =category,
             prices =prices,
@@ -297,23 +310,23 @@ def data_input_pandas(request,format=None):
             SKU=SKU       
             )
         data.save()'''
-        #reading and writing data into databae for category details from csv file
+        #----------------------------reading and writing data into databae for category details from csv file-----------------------------------
         # 
         #   '''title="banner"+str(i)
-    '''image="banner_image"+str(i)
+'''image="banner_image"+str(i)
         print(title,image)
         data=images_and_banners(
             title=title,
             image=image
         )
         data.save()'''
-    ''' titlee="Make Best Dosa with us!"
-            imagee="https://youtu.be/EkJC0GgY5wk"
+''' titlee="Make Best Dosa with us!"
+            imagee="https://youtube/EkJC0GgY5wk"
             data=images_and_banners(
             title=titlee,
             image=imagee
             ''' 
-    '''df=pd.read_csv('realvedic_category.csv')
+'''df=pd.read_csv('realvedic_category.csv')
     df =df.fillna(0)
     res=df.to_dict(orient='records')
     for i in range(len(res)):
