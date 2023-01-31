@@ -17,7 +17,7 @@ class Product_data(models.Model):
     
     Product_name = models.TextField(blank = True)
     category = models.TextField(blank = True)
-    image = models.ImageField(blank=True)
+    image = models.FileField(blank=True)
     prices = models.TextField(blank = True)
     Sizes = models.TextField(blank = True)
     benefits = models.TextField(blank = True)

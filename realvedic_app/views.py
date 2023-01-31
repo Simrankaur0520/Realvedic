@@ -81,6 +81,7 @@ def write_data(request,format=None):
     large_carousal_images_list=[]
     small_carousal_images_list=[]
     single_product_detailss={}
+    blog_obj_list=[]
     #=--------------------------------------------------------------------------------------------------------------------------------------------------------
     #------------------------------------------------------------Passing values to tab------------------------------------------------------------------------
     for i in category_obj:
@@ -163,6 +164,20 @@ def write_data(request,format=None):
     
     #    return Response(obj)
     single_product_detailss['blog']=blog
+    #--------------------------------------------------blog object editing----------------------------------------------------------------------------
+    
+    
+    for i in blog_obj:
+        blog={
+            'id':i["id"],
+            'image':i["image"],
+            'title':i["title"],
+            'Content':i["content"],
+            'points':eval(i["Points"])
+          
+        }
+        blog_obj_list.append(blog)
+
 
   
    
@@ -174,7 +189,7 @@ def write_data(request,format=None):
     res['large_carousal_images']=large_carousal_images_list
     res["single_product_details"]=single_product_detailss
     res['best_offers']=best_offers
-    res['blog']=blog_obj
+    res['blog']=blog_obj_list
     
 
     return Response(res)
@@ -220,11 +235,11 @@ def single_product_view(request,format=None):
                 'description':i["ingredients"]
             }
         how_to_use={
-                'title':"how_to_use",
+                'title':"how to use",
                 'description':i["how_to_use"]
             }
         how_we_make_it={
-                'title':"how_we_make_it",
+                'title':"how we make it",
                 'description':i["how_we_make_it"]
             }
         nutrition={
@@ -262,6 +277,26 @@ def single_product_view(request,format=None):
 
         
     return Response(res)
+
+@api_view(['GET'])
+def all_product_view(request,format=None):
+    products_list=[]
+    obj=Product_data.objects.values()
+    for i in obj:
+      
+        prod={
+            'id':i['id'],
+            'image':i["image"],
+            "title":i["Product_name"],
+            "weight":i["Sizes"].split("|")[0],
+            "price":i["prices"].split("|")[0]
+        }
+    
+        products_list.append(prod)
+    return Response(products_list)
+
+
+
 
     
 #----------------------------------------------------------data input for all databses commented down in this function-----------------------------
