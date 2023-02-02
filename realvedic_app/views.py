@@ -106,9 +106,9 @@ def write_data(request,format=None):
     for i in obj:
         top_seller_products={
             'image':i["image"],
-            "title":i["Product_name"],
-            "weight":i["Sizes"].split("|")[0],
-            "price":i["prices"].split("|")[0]
+            "title":i["title"],
+            "weight":i["size"].split("|")[0],
+            "price":i["price"].split("|")[0]
         }
     
         top_seller_products_list.append(top_seller_products)
@@ -204,27 +204,27 @@ def single_product_view(request,format=None):
     res={}
    
     benefits={}
-    pack_sizes=[]
+    pack_size=[]
     #------------------------------------------------------assigning product_details to the response----------------------------------------------
     for i in obj:
-        weight=i["Sizes"].split("|")
-        prices=i["prices"].split("|")
+        weight=i["size"].split("|")
+        price=i["price"].split("|")
         for j in range(len(weight)):
             weight_price={
                 'weight':weight[j],
-                'price':prices[j],
-                'Offer_price':int(prices[j])+5
+                'price':price[j],
+                'Offer_price':int(price[j])+5
             }
-            pack_sizes.append(weight_price)
+            pack_size.append(weight_price)
         prod_details={
             'id':i["id"],
-            "title":i["Product_name"],
+            "title":i["title"],
             'description':desc,
-            "original_price":i["prices"].split("|")[0],
-            "offer_price":int(i["prices"].split("|")[0])+5,
+            "original_price":i["price"].split("|")[0],
+            "offer_price":int(i["price"].split("|")[0])+5,
             'single_image':i["image"],
             'images':["",""],
-            'pack_sizes':pack_sizes}
+            'pack_size':pack_size}
             
         benefits={
                 'title':"benefits",
@@ -287,22 +287,66 @@ def all_product_view(request,format=None):
         prod={
             'id':i['id'],
             'image':i["image"],
-            "title":i["Product_name"],
-            "weight":i["Sizes"].split("|")[0],
-            "price":i["prices"].split("|")[0]
+            "title":i["title"],
+            "weight":i["size"].split("|")[0],
+            "price":i["price"].split("|")[0]
         }
     
         products_list.append(prod)
     return Response(products_list)
 
 
+@api_view(['GET'])
+def categoryPage(request,format=None):
+    category = request.GET.get('category')
+    products=[]
+    res={}
+    if category == '0' or 0:
+        prod_data=Product_data.objects.values('id','title','image','price','size')
+        for i in prod_data:
+      
+            prod={
+                'id':i['id'],
+                "title":i["title"],
+                'image':i["image"],
+                "weight":i["size"].split("|")[0],
+                "price":i["price"].split("|")[0]
+            }
+            products.append(prod)
+        res['category']="All Products"
+        res['products']=products
+        
+    else :
+            
+        category_obj= categoryy.objects.filter(id= category).values()
+        #product_obj=Product_data.objects.filter
+        category_name=""
+        for i in category_obj:
+            category_name=i['category']
+        prod_data=Product_data.objects.filter(category=category_name).values('id','title','image','price','size')
+        for i in prod_data:
+      
+            prod={
+                'id':i['id'],
+                "title":i["title"],
+                'image':i["image"],
+                "weight":i["size"].split("|")[0],
+                "price":i["price"].split("|")[0]
+            }
+            products.append(prod)
+        res['category']=category_name
+        res['products']=products
+       
+
+    return Response(res)
 
 
     
 #----------------------------------------------------------data input for all databses commented down in this function-----------------------------
 @api_view(['GET'])
 def data_input_pandas(request,format=None):
-    category_obj=categoryy.objects.all()
+    category_obj=categoryy.objects.values()
+    return Response(category_obj)
    
     #-------------------------------------------------------reading and writing product data from csv file------------------------------------------ 
     '''df=pd.read_csv('product_view.csv')
@@ -311,10 +355,10 @@ def data_input_pandas(request,format=None):
     #dff=df.apply(lambda x: x.split(","),axis=0)'''
     '''for i in range(len(res)):
 
-        Product_name =res[i]["name"]
+        title =res[i]["name"]
         category =res[i]["category"]
-        prices =res[i]["price"]
-        Sizes =res[i]["sizes"]
+        price =res[i]["price"]
+        size =res[i]["size"]
         benefits =res[i]["benefits"]
         ingredients=res[i]["ingredients"]
         how_to_use=res[i]["how_to_use"]
@@ -330,10 +374,10 @@ def data_input_pandas(request,format=None):
      
 
 '''data=Product_data(
-            Product_name =Product_name,
+            title =title,
             category =category,
-            prices =prices,
-            Sizes = Sizes,
+            price =price,
+            size = size,
             benefits =benefits,
             ingredients= ingredients,
             how_to_use=how_to_use,

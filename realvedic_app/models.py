@@ -15,11 +15,11 @@ class customer_details(models.Model):
     
 class Product_data(models.Model):
     
-    Product_name = models.TextField(blank = True)
+    title = models.TextField(blank = True)
     category = models.TextField(blank = True)
     image = models.FileField(blank=True)
-    prices = models.TextField(blank = True)
-    Sizes = models.TextField(blank = True)
+    price = models.TextField(blank = True)
+    size = models.TextField(blank = True)
     benefits = models.TextField(blank = True)
     ingredients= models.TextField(blank = True)
     how_to_use=models.TextField(blank = True)
