@@ -341,7 +341,9 @@ def categoryPage(request,format=None):
     return Response(res)
 
 
-    
+#----------------------------------------------------------user cart view-------------------------------------------------------
+
+
 #----------------------------------------------------------data input for all databses commented down in this function-----------------------------
 @api_view(['GET'])
 def data_input_pandas(request,format=None):

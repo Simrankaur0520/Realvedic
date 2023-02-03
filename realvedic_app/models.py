@@ -52,6 +52,36 @@ class blogs(models.Model):
     content=models.TextField()
     Points=models.TextField(blank=True)
 
+#-------------------------------------------------user side models--------------------------------------
+
+class user_cart(models.Model):
+    user_id = models.TextField()
+    product_id = models.TextField()
+    size = models.TextField()
+    quantity = models.TextField(blank=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+class user_data(models.Model):
+    name = models.TextField()
+    email = models.TextField()
+    gender = models.TextField()
+    dob = models.TextField()
+    phone_code = models.TextField()
+    phone_no = models.TextField()
+    password = models.TextField()
+    token = models.TextField()
+
+class user_address(models.Model):
+    user_id = models.TextField()
+    add_line_1 = models.TextField()
+    add_line_2 = models.TextField(null=True,blank=True)
+    landmark = models.TextField(null=True,blank=True)
+    city = models.TextField()
+    state = models.TextField()
+    country = models.TextField()
+    pincode = models.TextField()
+    phone_no = models.TextField()
+
 
 
 
