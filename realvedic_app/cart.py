@@ -116,6 +116,7 @@ def user_cart_view(request,format=None):
     token = request.data['token']
     try:
         user = user_data.objects.get(token = token)
+        print(user.first_name)
     except:
         res = {
                 'status':False,
@@ -132,20 +133,22 @@ def user_cart_view(request,format=None):
             'checkout_data': []
           }
         return Response(res)
+    else :
+        return Response(items)
     #quantity=1
     product_list = []
     final_sub_total = 0
     final_making_charges = 0
     shipping = 100
     tax = 1.8
-    for i in items:
-        prod_data = products.filter(id = i['product_id']).last()
+    #'''for i in items:
+        #prod_data = products.filter(id = i['product_id']).last()
     
-        prod_dict = {
-                     'cart_product_id':i['id'],
-                     'id':prod_data['id'],
-                     'image':prod_data['image'].split(',')[0],
-                     'title':prod_data['name'],
-                     'quantity':i['quantity']
-                    }
-    return("in progress")
+    #    prod_dict = {
+         #            'cart_product_id':i['id'],
+         #            'id':prod_data['id'],
+          #           ''''image':prod_data['image'].split(',')[0],
+           #          'title':prod_data['title'],'''
+            #         'quantity':i['quantity']'''
+                 #   }
+    return Response("in progress")
