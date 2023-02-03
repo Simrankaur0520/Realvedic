@@ -17,6 +17,7 @@ from django.db.models.functions import Concat,Cast,Substr
 from django.contrib.auth.hashers import make_password,check_password
 from django.db.models import Min, Max
 from django.db.models import Subquery
+# from django.views.decorators.csrf import csrf_exempt
 #----------------------------restAPI--------------------------------------------------
 from rest_framework.decorators import parser_classes,api_view
 from rest_framework.parsers import MultiPartParser,FormParser
@@ -30,44 +31,53 @@ import simplejson as json
 
 
 @api_view(['POST'])
+# @csrf_exempt
 def signUp(request,format=None):
-    gender = request.data['gender']
-    name = request.data['name']
-    email = request.data['email']
-    dob = request.data['dob']
-    phone_code = request.data['phone_code']
-    phone_no = request.data['phone_no']
-    password = request.data['password']
+    if request.method == 'POST':
+        gender = request.data['gender']
+        first_name = request.data['first_name']
+        last_name = request.data['last_name']
+        email = request.data['email']
+        dob = request.data['dob']
+        phone_code = request.data['phone_code']
+        phone_no = request.data['phone_no']
+        password = request.data['password']
 
-    enc_pass = make_password(password)
-    token = make_password(email+password)
+        enc_pass = make_password(password)
+        token = make_password(email+password)
 
-    if email in user_data.objects.values_list('email',flat=True):
-        return Response({'message':'Email already exist',
-                         'status':False    
-                        })
-    if phone_no in user_data.objects.values_list('email',flat=True):
-        return Response({'message':'Phone number already exist',
-                         'status':False 
-                         })
-    data = user_data(
-                        name = name,
-                        email = email,
-                        gender = gender,
-                        dob = dob,
-                        phone_code = phone_code,
-                        phone_no = phone_no,
-                        password = enc_pass,
-                        token = token,
-                    )
-    data.save()
-    
-    res = { 
-            'message':'User created successfully',
-            'status':True    
-    }   
+        if email in user_data.objects.values_list('email',flat=True):
+            return Response({'message':'Email already exist',
+                            'status':False    
+                            })
+        if phone_no in user_data.objects.values_list('email',flat=True):
+            return Response({'message':'Phone number already exist',
+                            'status':False 
+                            })
+        data = user_data(
+                            first_name = first_name,
+                            last_name = last_name,
+                            email = email,
+                            gender = gender,
+                            dob = dob,
+                            phone_code = phone_code,
+                            phone_no = phone_no,
+                            password = enc_pass,
+                            token = token,
+                        )
+        data.save()
+        
+        res = { 
+                'message':'User created successfully',
+                'status':True    
+        }   
 
-    return Response(res)
+        return Response(res)
+
+@api_view(['GET'])
+def user_view(request,format=None):
+    obj=user_data.objects.values()
+    return Response(obj)
 
 @api_view(['POST'])
 def login(request,format=None):

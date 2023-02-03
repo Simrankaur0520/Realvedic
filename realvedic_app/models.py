@@ -58,11 +58,13 @@ class user_cart(models.Model):
     user_id = models.TextField()
     product_id = models.TextField()
     size = models.TextField()
+    price_per_unit=models.TextField(blank=True)
     quantity = models.TextField(blank=True)
     updated_at = models.DateTimeField(auto_now=True)
 
 class user_data(models.Model):
-    name = models.TextField()
+    first_name = models.TextField()
+    last_name = models.TextField(blank=True)
     email = models.TextField()
     gender = models.TextField()
     dob = models.TextField()

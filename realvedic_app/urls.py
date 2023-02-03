@@ -21,8 +21,13 @@ urlpatterns = [
     #--------login and signup
     path('signUp',auth.signUp,name='signUp'),
     path('login',auth.login,name='login'),
+    path('user_view',auth.user_view,name='user_view'),
 
-    
+    #-------cart----------------------
+   
+    path('add_to_cart',cart.add_to_cart,name='add_to_cart'),
+    path('user_cart_view',cart.user_cart_view,name='user_cart_view')
+
     
     
 ]

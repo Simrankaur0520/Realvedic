@@ -30,6 +30,88 @@ from realvedic_app.models import user_cart
 #----------------------------extra---------------------------------------------------
 import simplejson as json
 
+#---------------------------------------------------------------------------------------------------------------------------------
+##################################################################################################################################
+#------------------------------------------------Add To cart----------------------------------------------------------------------
+#*********************************************************************************************************************************
+''' user_id = models.TextField()
+    product_id = models.TextField()
+    size = models.TextField()
+    price_per_unit=models.TextField()
+    quantity = models.TextField(blank=True)
+    updated_at = models.DateTimeField(auto_now=True)'''
+ 
+@api_view(['POST'])
+def add_to_cart(request,fromat=None):
+     if request.method == 'POST':
+        token = request.data['token']
+        product_id = request.data['product_id']
+        size = request.data['size']
+        price=request.data['price']
+        
+        #----------------Checking for Product id in produt data
+
+        try:
+            Product_data.objects.get(id=product_id)
+            print("1st try encounetred")
+            try:
+                user = user_data.objects.get(token = token)
+                print("2nd try encounetred")
+            except:
+                res = {
+                        'status':False,
+                        'message':'Something went wrong'
+                    }
+                return Response(res)
+            obj = user_cart.objects.filter(user_id = user.id,
+                                        product_id = product_id,
+                                        price_per_unit=price,
+                                        size = size
+                                        ).values()
+            if len(obj) == 0:
+                data = user_cart(
+                                    user_id = user.id,
+                                    product_id = product_id,
+                                    size = size,
+                                    price_per_unit=price,
+                                    quantity = '1',
+              
+                                )
+                data.save()
+               
+                res = {
+                        
+                        'status' : True,
+                        'message': 'Product added to cart successfully'
+                    }
+                return Response(res)
+            else:
+                obj = user_cart.objects.filter(user_id = user.id,
+                                        product_id = product_id,
+                                        size = size,
+                                        price_per_unit=price).values().last()
+                quantity = int(obj['quantity'])+1
+                user_cart.objects.filter(user_id = user.id,
+                                        product_id = product_id,
+                                        size = size,
+                                        price_per_unit=price,
+                                       ).update(quantity = quantity)
+                res = {
+                        'status' : True,
+                        'message': 'Product already exist, quantity increased'
+                    }
+                return Response(res)
+                    
+
+        #---------------Except block for product id to perform further actions
+        except:
+            res = {
+                    'status':False,
+                    'message':'Something went wrong'
+                }
+            return Response(res)
+
+@api_view(['POST'])
 def user_cart_view(request,format=None):
     token = request.data['token']
     try:

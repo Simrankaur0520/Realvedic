@@ -288,10 +288,11 @@ def all_product_view(request,format=None):
             'id':i['id'],
             'image':i["image"],
             "title":i["title"],
-            "weight":i["size"].split("|")[0],
-            "price":i["price"].split("|")[0]
+            "weight":i["size"].split("|"),
+            "price":i["price"].split("|")
         }
-    
+    for j in prod['weight']:
+        print(j.split('g'))
         products_list.append(prod)
     return Response(products_list)
 
@@ -309,8 +310,8 @@ def categoryPage(request,format=None):
                 'id':i['id'],
                 "title":i["title"],
                 'image':i["image"],
-                "weight":i["size"].split("|")[0],
-                "price":i["price"].split("|")[0]
+                "weight":i["size"].split("|"),
+                "price":i["price"].split("|")
             }
             products.append(prod)
         res['category']="All Products"
