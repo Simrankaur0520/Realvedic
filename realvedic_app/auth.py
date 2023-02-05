@@ -29,6 +29,8 @@ from realvedic_app.models import user_data
 #----------------------------extra---------------------------------------------------
 import simplejson as json
 
+#comment
+
 
 @api_view(['POST'])
 # @csrf_exempt
