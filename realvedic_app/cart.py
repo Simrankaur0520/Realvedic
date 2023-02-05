@@ -128,19 +128,23 @@ def user_cart_view(request,format=None):
     if len(items)==0:
         res = {
             'status':True,
-            'message':'Cart generated',
+            'message':'Cart generated successfully',
             'products':[],
             'checkout_data': []
           }
         return Response(res)
     else :
+
+
         return Response(items)
     #quantity=1
-    product_list = []
+    '''product_list = []
     final_sub_total = 0
     final_making_charges = 0
     shipping = 100
-    tax = 1.8
+    tax = 1.8'''
+
+    
     #'''for i in items:
         #prod_data = products.filter(id = i['product_id']).last()
     
@@ -151,4 +155,34 @@ def user_cart_view(request,format=None):
            #          'title':prod_data['title'],'''
             #         'quantity':i['quantity']'''
                  #   }
-    return Response("in progress")
+
+
+@api_view(['POST'])
+def checkout(request,format=None):
+    token=request.data['token']
+    res={}
+    user = user_data.objects.get(token = token)
+    items = user_cart.objects.filter(user_id = user.id).values()
+    address=user_address.objects.get(user_id=user.id)
+    personal_info={
+        "first_name":user.first_name,
+        'last_name':user.last_name,
+        "email":user.email,
+        "phone_code":user.phone_code,
+        "phone_number":user.phone_no
+    }
+    address_info={
+        "address_line_1":address.add_line_1,
+        "address_line_2":address.add_line_2,
+        "city":address.city,
+        "state":address.state,
+        "pincode":address.pincode,
+        "country":address.country
+    }
+
+    res['personal_info']=personal_info
+    res['address_info']=address_info
+    res['items']=items
+    
+    return Response(res)
+

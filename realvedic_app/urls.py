@@ -28,6 +28,7 @@ urlpatterns = [
    
     path('user_account_view',cart.add_to_cart,name='add_to_cart'),
     path('user_cart_view',cart.user_cart_view,name='user_cart_view'),
+     path('checkout',cart.checkout,name='checkout'),
 
     #-------------------------------------------user details 
     path('userAccountView',usr.userAccountView,name='userAccountView'),
