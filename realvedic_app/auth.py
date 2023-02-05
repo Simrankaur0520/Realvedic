@@ -29,7 +29,7 @@ from realvedic_app.models import user_data
 #----------------------------extra---------------------------------------------------
 import simplejson as json
 
-#comment
+#coment
 
 
 @api_view(['POST'])

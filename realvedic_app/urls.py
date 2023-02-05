@@ -8,6 +8,7 @@ from django.conf import settings
 import realvedic_app.auth as auth
 #import realvedic_app.user_data as user
 import realvedic_app.cart as cart
+import realvedic_app.user_account as usr
 '''import realvedic_app.admin_views as admin_views
 import realvedic_app.payments as pay
 import realvedic_app.order_status as od'''
@@ -25,8 +26,15 @@ urlpatterns = [
 
     #-------cart----------------------
    
-    path('add_to_cart',cart.add_to_cart,name='add_to_cart'),
-    path('user_cart_view',cart.user_cart_view,name='user_cart_view')
+    path('user_account_view',cart.add_to_cart,name='add_to_cart'),
+    path('user_cart_view',cart.user_cart_view,name='user_cart_view'),
+
+    #-------------------------------------------user details 
+    path('userAccountView',usr.userAccountView,name='userAccountView'),
+    path('UserAccountEdit',usr.UserAccountEdit,name='UserAccountEdit'),
+    
+    
+
 
     
     
