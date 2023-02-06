@@ -331,8 +331,8 @@ def categoryPage(request,format=None):
                 'id':i['id'],
                 "title":i["title"],
                 'image':i["image"],
-                "weight":i["size"].split("|")[0],
-                "price":i["price"].split("|")[0]
+                "weight":i["size"].split("|"),
+                "price":i["price"].split("|")
             }
             products.append(prod)
         res['category']=category_name

@@ -112,6 +112,101 @@ def add_to_cart(request,fromat=None):
             return Response(res)
 
 @api_view(['POST'])
+def UserCartView(request,format=None):
+    token = request.data['token']
+    #--------------------variables for calculations----------
+    subtotal=0
+    shipping=40
+    tax=50
+    final_price=0
+    #------------------------
+    cartitems=[]
+    res={}
+    try:
+        user = user_data.objects.get(token = token)
+    except:
+        res = {
+                'status':False,
+                'message':'Something went wrong'
+            }
+        return Response(res)
+    items = user_cart.objects.filter(user_id = user.id).values()
+    for i in items:
+        print(i['product_id'])
+        products = Product_data.objects.filter(id=i['product_id']).values()
+        for j in products:
+            subtotal=subtotal+eval(i['price_per_unit'])*eval(i['quantity'])
+            prod_dict={
+                'name':j['title'],
+                'unit_price':i['price_per_unit'],
+                'price':eval(i['price_per_unit'])*eval(i['quantity']),
+                'quantity':i['quantity'],
+                'image':j['image']
+            }
+            #subtotal=subtotal+eval(prod_dict['price'])
+            print(prod_dict)
+            cartitems.append(prod_dict)
+    final_price=subtotal+tax+shipping
+    cart_total={
+        'subtotal':subtotal,
+        'shipping':shipping,
+        'tax':tax,
+        'final_price':final_price
+    }
+    if len(items)==0:
+        res = {
+            'status':True,
+            'message':'Cart generated successfully',
+            'products':[],
+            'checkout_data': []
+          }
+        return Response(res)
+    else :
+        res['cartItems']=cartitems
+        res['cart_total']=cart_total
+        return Response(res)
+
+@api_view(['POST'])
+def checkout(request,format=None):
+    token=request.data['token']
+    res={}
+    user = user_data.objects.get(token = token)
+    items = user_cart.objects.filter(user_id = user.id).values()
+    address=user_address.objects.get(user_id=user.id)
+    personal_info={
+        "first_name":user.first_name,
+        'last_name':user.last_name,
+        "email":user.email,
+        "phone_code":user.phone_code,
+        "phone_number":user.phone_no
+    }
+    address_info={
+        "address_line_1":address.add_line_1,
+        "address_line_2":address.add_line_2,
+        "city":address.city,
+        "state":address.state,
+        "pincode":address.pincode,
+        "country":address.country
+    }
+    res['personal_info']=personal_info
+    res['address_info']=address_info
+    res['items']=items
+    return Response(res)
+
+
+
+
+
+
+
+
+
+
+
+
+
+'''
+@api_view(['POST'])
 def user_cart_view(request,format=None):
     token = request.data['token']
     try:
@@ -138,26 +233,21 @@ def user_cart_view(request,format=None):
 
         return Response(items)
     #quantity=1
-    '''product_list = []
-    final_sub_total = 0
-    final_making_charges = 0
-    shipping = 100
-    tax = 1.8'''
 
     
-    #'''for i in items:
+    for i in items:
         #prod_data = products.filter(id = i['product_id']).last()
     
     #    prod_dict = {
          #            'cart_product_id':i['id'],
          #            'id':prod_data['id'],
-          #           ''''image':prod_data['image'].split(',')[0],
-           #          'title':prod_data['title'],'''
-            #         'quantity':i['quantity']'''
-                 #   }
+          #           'image':prod_data['image'].split(',')[0],
+           #          'title':prod_data['title'],
+            #         'quantity':i['quantity']
+                 #   }'''
 
 
-@api_view(['POST'])
+'''@api_view(['POST'])
 def checkout(request,format=None):
     token=request.data['token']
     res={}
@@ -184,5 +274,5 @@ def checkout(request,format=None):
     res['address_info']=address_info
     res['items']=items
     
-    return Response(res)
+    return Response(res)'''
 
